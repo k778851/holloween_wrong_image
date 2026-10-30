@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>할로윈 틀린그림 찾기</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="hud">
+    <div class="hud-top">
+      <h1 id="title">할로윈 틀린그림 찾기</h1>
+      <button id="btn-mute" class="icon-btn" aria-label="소리 켜기/끄기">🔊</button>
+    </div>
+    <div class="stats">
+      <span id="level-label">-</span>
+      <span>찾은 개수 <b id="found">0</b> / <b id="total">0</b></span>
+      <span class="time">⏱ <b id="time-text">30.0</b>s</span>
+    </div>
+    <div id="timebar"><div id="timebar-fill"></div></div>
+  </header>
+
+  <main id="board">
+    <div class="panel" data-side="original">
+      <img id="img-original" alt="원본 이미지" draggable="false">
+      <div class="markers"></div>
+      <span class="tag">원본</span>
+    </div>
+    <div class="panel" data-side="modified">
+      <img id="img-modified" alt="틀린 이미지" draggable="false">
+      <div class="markers"></div>
+      <span class="tag">틀린 그림</span>
+    </div>
+  </main>
+
+  <!-- 시작 화면 -->
+  <div id="screen-start" class="overlay">
+    <div class="card">
+      <div class="emoji">🎃</div>
+      <h2 id="start-title">할로윈 틀린그림 찾기</h2>
+      <p>제한 시간 <b id="start-time">30</b>초 안에 다른 곳을 모두 찾으세요.<br>
+         시간 안에 못 찾으면... <span class="warn">무언가 나타납니다.</span></p>
+      <button id="btn-start">시작하기</button>
+    </div>
+  </div>
+
+  <!-- 결과 화면 -->
+  <div id="screen-result" class="overlay hidden">
+    <div class="card">
+      <div class="emoji" id="result-emoji">👻</div>
+      <h2 id="result-title"></h2>
+      <p id="result-desc"></p>
+      <div class="buttons">
+        <button id="btn-next">다음 단계</button>
+        <button id="btn-retry">다시 하기</button>
+        <button id="btn-home" class="ghost-btn">처음으로</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 귀신 화면 -->
+  <div id="jumpscare" class="hidden">
+    <img id="ghost-img" alt="">
+  </div>
+
+  <!-- 좌표 편집기 (index.html?edit) -->
+  <aside id="editor" class="hidden">
+    <h3>좌표 편집 모드</h3>
+    <label>레벨 <select id="edit-level"></select></label>
+    <p class="hint">이미지 아무 쪽이나 클릭 → 틀린 곳 추가<br>
+      Shift+클릭 → 마지막 항목의 그쪽 위치만 옮기기 (물체가 이동한 경우)<br>
+      표시된 원 클릭 → 삭제</p>
+    <textarea id="edit-output" readonly></textarea>
+    <div class="buttons">
+      <button id="edit-copy">복사</button>
+      <button id="edit-clear" class="ghost-btn">전부 지우기</button>
+    </div>
+    <p class="hint">복사한 내용을 config.js 의 해당 레벨 differences 에 붙여넣으세요.</p>
+  </aside>
+
+  <script src="config.js"></script>
+  <script src="sound.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
