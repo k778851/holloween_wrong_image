@@ -21,8 +21,11 @@
 |---|---|
 | `timeLimit` | 제한 시간(초) |
 | `shuffle` | 문항 순서 무작위 |
+| `questionsPerGame` | 한 판에 나오는 문항 수 (1 = 무작위 1문제, 0 = 전부) |
 | `wrongClickPenalty` | 오답 클릭 시 깎이는 시간(초) |
-| `ghostImage` | 시간 초과 시 나오는 귀신 이미지 |
+| `ghostImage` / `ghostFocus` | 시간 초과 시 나오는 귀신 이미지 / 얼굴(눈) 위치 |
+| `ghostFlash` | 귀신 등장 시 깜빡임 효과 (플레이어가 시작 화면에서 끌 수도 있음) |
+| `ghostPause` / `ghostDuration` | 등장 전 정적 시간 / 귀신이 보이는 시간(ms) |
 | `sound` | 볼륨, 배경음, 효과음 파일 교체 |
 
 ## 파일 구성

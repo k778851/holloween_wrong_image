@@ -26,8 +26,17 @@ window.GAME_CONFIG = {
   // true 면 게임을 시작할 때마다 단계(문항) 순서를 무작위로 섞습니다.
   shuffle: true,
 
-  // 시간 초과 시 나오는 귀신 이미지
-  ghostImage: "images/ghost.svg",
+  // 한 판에 나오는 문항 수. 1 이면 levels 중 1개만 무작위로 출제. 0 이면 전부.
+  questionsPerGame: 1,
+
+  // 시간 초과 시 나오는 귀신 이미지 (화면을 꽉 채워 표시)
+  ghostImage: "images/ghost.webp",
+
+  // 이미지에서 얼굴(눈) 위치 (%). 확대·접근 효과의 중심이 됩니다.
+  ghostFocus: { x: 50, y: 33 },
+
+  // 깜빡임 효과 기본값. 시작 화면의 체크박스로 플레이어가 끌 수도 있습니다.
+  ghostFlash: true,
 
   // 사운드 설정
   sound: {
@@ -48,8 +57,9 @@ window.GAME_CONFIG = {
     },
   },
 
-  // 귀신 화면 유지 시간(ms). 이후 결과 화면이 나옵니다.
-  ghostDuration: 2500,
+  // 귀신 연출 타이밍(ms)
+  ghostPause: 400,     // 시간 0 → 귀신 등장 전 정적
+  ghostDuration: 2300, // 귀신이 보이는 시간 (이후 암전 → 결과 화면)
 
   // 틀린 곳 적는 법
   //   { x, y }                       : 양쪽 같은 위치

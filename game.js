@@ -76,7 +76,8 @@
         [order[i], order[j]] = [order[j], order[i]];
       }
     }
-    return order;
+    // questionsPerGame 개만 출제 (0 이면 전부)
+    return C.questionsPerGame > 0 ? order.slice(0, C.questionsPerGame) : order;
   }
 
   async function startLevel(step) {
@@ -89,7 +90,10 @@
     hideOverlays();
 
     const lv = level();
-    $("level-label").textContent = `${step + 1} / ${state.order.length} 단계 · ${lv.name ?? ""}`;
+    $("level-label").textContent =
+      state.order.length > 1
+        ? `${step + 1} / ${state.order.length} 단계 · ${lv.name ?? ""}`
+        : lv.name ?? "";
     $("found").textContent = 0;
     $("total").textContent = lv.differences.length;
     state.limit = lv.timeLimit ?? C.timeLimit;
@@ -166,7 +170,7 @@
     setTimeout(() => SFX.play(isLast ? "allClear" : "clear"), 250);
     showResult({
       emoji: isLast ? "🏆" : "🎃",
-      title: isLast ? "모든 단계 클리어!" : "단계 클리어!",
+      title: !isLast ? "단계 클리어!" : state.order.length > 1 ? "모든 단계 클리어!" : "클리어!",
       desc: `남은 시간 ${$("time-text").textContent}초`,
       next: !isLast,
     });
@@ -180,25 +184,35 @@
     });
 
     const js = $("jumpscare");
-    $("ghost-img").src = C.ghostImage;
-    js.classList.remove("hidden");
-    SFX.stopBgm();
-    SFX.play("scream");
+    const pause = C.ghostPause ?? 400;
+    const dur = C.ghostDuration ?? 2300;
+    js.style.setProperty("--dur", `${dur}ms`);
 
-    let done = false;
-    const finish = () => {
-      if (done) return;
-      done = true;
-      js.classList.add("hidden");
+    // ① 정적: 배경음이 끊기고 화면이 어두워짐
+    SFX.stopBgm();
+    js.className = flashOn() ? "pre flash" : "pre";
+
+    // ② 급접근 + 비명 (③④ 는 CSS 애니메이션)
+    setTimeout(() => {
+      js.classList.replace("pre", "go");
+      SFX.play("scream");
+    }, pause);
+
+    // ⑤ 암전 → 결과 화면
+    setTimeout(() => js.classList.add("off"), pause + dur);
+    setTimeout(() => {
+      js.className = "hidden";
       showResult({
         emoji: "👻",
         title: "시간 초과...",
         desc: `${lv.differences.length}개 중 ${state.found.size}개를 찾았어요.<br>빨간 점선이 못 찾은 곳이에요.`,
         next: false,
       });
-    };
-    setTimeout(finish, C.ghostDuration ?? 2500);
+    }, pause + dur + 400);
   }
+
+  // 깜빡임: config 의 ghostFlash 가 켜져 있고, 플레이어가 끄지 않았을 때만
+  const flashOn = () => C.ghostFlash !== false && !$("opt-noflash").checked;
 
   function showResult({ emoji, title, desc, next }) {
     $("result-emoji").textContent = emoji;
@@ -212,7 +226,7 @@
   function hideOverlays() {
     $("screen-start").classList.add("hidden");
     $("screen-result").classList.add("hidden");
-    $("jumpscare").classList.add("hidden");
+    $("jumpscare").className = "hidden";
   }
 
   // ---------- 편집 모드 ----------
@@ -324,6 +338,17 @@
   muteBtn.onclick = () => { SFX.toggleMute(); renderMute(); };
   renderMute();
 
-  // 귀신 이미지 미리 로드
-  new Image().src = C.ghostImage;
+  // 귀신 이미지: 미리 로드 + 얼굴 위치 지정
+  document.querySelectorAll(".js-img").forEach((img) => (img.src = C.ghostImage));
+  const focus = C.ghostFocus ?? { x: 50, y: 33 };
+  $("jumpscare").style.setProperty("--fx", `${focus.x}%`);
+  $("jumpscare").style.setProperty("--fy", `${focus.y}%`);
+
+  // 깜빡임 끄기 체크박스 (브라우저에 기억)
+  const noFlash = $("opt-noflash");
+  if (C.ghostFlash === false) noFlash.closest("label").classList.add("hidden");
+  try { noFlash.checked = localStorage.getItem("wrongimage-noflash") === "1"; } catch {}
+  noFlash.onchange = () => {
+    try { localStorage.setItem("wrongimage-noflash", noFlash.checked ? "1" : "0"); } catch {}
+  };
 })();

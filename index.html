@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>할로윈 틀린그림 찾기</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <header id="hud">
@@ -40,6 +40,8 @@
       <h2 id="start-title">할로윈 틀린그림 찾기</h2>
       <p>제한 시간 <b id="start-time">30</b>초 안에 다른 곳을 모두 찾으세요.<br>
          시간 안에 못 찾으면... <span class="warn">무언가 나타납니다.</span></p>
+      <p class="caution">⚠ 갑자기 큰 소리와 깜빡이는 화면이 나올 수 있습니다.</p>
+      <label class="check"><input type="checkbox" id="opt-noflash"> 깜빡임 효과 끄기</label>
       <button id="btn-start">시작하기</button>
     </div>
   </div>
@@ -60,7 +62,17 @@
 
   <!-- 귀신 화면 -->
   <div id="jumpscare" class="hidden">
-    <img id="ghost-img" alt="">
+    <div class="js-shake">
+      <div class="js-zoom">
+        <img class="js-img" id="ghost-img" alt="">
+        <img class="js-img js-red" alt="">
+        <img class="js-img js-blue" alt="">
+      </div>
+    </div>
+    <div class="js-noise"></div>
+    <div class="js-vignette"></div>
+    <div class="js-flash"></div>
+    <div class="js-black"></div>
   </div>
 
   <!-- 좌표 편집기 (index.html?edit) -->
@@ -78,8 +90,8 @@
     <p class="hint">복사한 내용을 config.js 의 해당 레벨 differences 에 붙여넣으세요.</p>
   </aside>
 
-  <script src="config.js"></script>
-  <script src="sound.js"></script>
-  <script src="game.js"></script>
+  <script src="config.js?v=4"></script>
+  <script src="sound.js?v=4"></script>
+  <script src="game.js?v=4"></script>
 </body>
 </html>
