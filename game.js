@@ -325,7 +325,13 @@
   document.title = C.title;
   $("title").textContent = C.title;
   $("start-title").textContent = C.title;
-  $("start-time").textContent = C.timeLimit;
+  // 시작 화면에서 이번 판 문제를 미리 정해 두고, 그 문제의 제한 시간을 안내
+  function prepareOrder() {
+    state.order = makeOrder();
+    const lv = C.levels[state.order[0]];
+    $("start-time").textContent = state.order.length === 1 ? lv.timeLimit ?? C.timeLimit : C.timeLimit;
+  }
+  prepareOrder();
 
   if (isEdit) {
     initEditor();
@@ -339,7 +345,6 @@
   });
   $("btn-start").onclick = () => {
     SFX.unlock();
-    state.order = makeOrder();
     startLevel(0);
   };
   $("btn-next").onclick = () => startLevel(state.step + 1);
@@ -348,6 +353,7 @@
     SFX.stopBgm();
     hideOverlays();
     clearMarkers();
+    prepareOrder();
     $("screen-start").classList.remove("hidden");
   };
 
