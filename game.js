@@ -64,8 +64,12 @@
       x: ((e.clientX - rect.left) / rect.width) * 100,
       y: ((e.clientY - rect.top) / rect.height) * 100,
       ratio: rect.height / rect.width,
+      width: rect.width,
     };
   }
+
+  // 마지막 입력 장치 ("mouse" / "touch" / "pen") — 터치면 판정을 넉넉하게
+  let lastPointerType = "mouse";
 
   // ---------- 게임 ----------
   function makeOrder() {
@@ -137,13 +141,27 @@
     const lv = level();
 
     const side = sideOf(panel);
-    const inside = (d) => {
+    const touch = lastPointerType !== "mouse";
+    // 판정 반경: 손가락은 마우스보다 부정확하므로 배율을 곱하고, 최소 반경(px)을 보장
+    const reach = (d) => {
+      const r = radiusOf(d, side);
+      if (!touch) return r;
+      const minPct = ((C.touchMinRadiusPx ?? 28) / p.width) * 100;
+      return Math.max(r * (C.touchRadiusScale ?? 1.3), minPct);
+    };
+    const dist = (d) => {
       const pos = posOf(d, side);
       const dx = p.x - pos.x;
       const dy = (p.y - pos.y) * p.ratio; // 세로 %를 가로 기준으로 환산
-      return Math.hypot(dx, dy) <= radiusOf(d, side);
+      return Math.hypot(dx, dy);
     };
-    const hit = lv.differences.findIndex((d, idx) => !state.found.has(idx) && inside(d));
+    const inside = (d) => dist(d) <= reach(d);
+    // 범위가 겹치면 가장 가까운 정답으로 판정
+    let hit = -1;
+    lv.differences.forEach((d, idx) => {
+      if (state.found.has(idx) || !inside(d)) return;
+      if (hit < 0 || dist(d) < dist(lv.differences[hit])) hit = idx;
+    });
     // 이미 찾은 곳을 다시 누르면 무시 (패널티 없음)
     if (hit < 0 && lv.differences.some((d, idx) => state.found.has(idx) && inside(d))) return;
 
@@ -314,7 +332,11 @@
     return;
   }
 
-  panels.forEach((panel) => panel.addEventListener("click", (e) => handleClick(e, panel)));
+  panels.forEach((panel) => {
+    panel.addEventListener("pointerdown", (e) => (lastPointerType = e.pointerType || "mouse"));
+    // pointerdown 대신 click 으로 판정: 스크롤하려고 끌어당긴 터치는 오답으로 치지 않음
+    panel.addEventListener("click", (e) => handleClick(e, panel));
+  });
   $("btn-start").onclick = () => {
     SFX.unlock();
     state.order = makeOrder();
