@@ -15,7 +15,7 @@ window.GAME_CONFIG = {
   title: "할로윈 틀린그림 찾기",
 
   // 제한 시간(초). 레벨마다 timeLimit 을 따로 적으면 그 값이 우선합니다.
-  timeLimit: 30,
+  timeLimit: 40,
 
   // 틀린 곳을 클릭했을 때 깎이는 시간(초). 0 이면 패널티 없음.
   wrongClickPenalty: 2,
