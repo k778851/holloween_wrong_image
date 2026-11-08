@@ -85,6 +85,7 @@ window.GAME_CONFIG = {
     },
     {
       name: "유령의 저택",
+      timeLimit: 53, // 정답이 8개라 시간을 더 줌 (다른 문항과 정답당 시간 맞춤)
       original: "images/q2_a.webp",
       modified: "images/q2_b.webp",
       differences: [
